@@ -1,0 +1,44 @@
+prefix: "&7[&6Religions&7] "
+not_religion: "&7Neutral"
+religion_not_found: "&7Religion no encontrada"
+you_have_religion: "&cYa posees una religión"
+you_have_entered_the_religion: "&aAhora perteneces a la religión %religions_player_religion%"
+dont_hurt_your_nexo: "&cNo puede herir el nexo de su religión"
+dont_hurt_if_not_religion: "&cNo puede herir el nexo, primero debe escoger una religión"
+broadcast_message_rewards_by_time: "&aTodos los jugadores conectados pertenecientes a %religion_name% &ahan recibido recompensas por superar a las demas religiones"
+religion_full: "&cEsta religion no acepta mas jugadores, pruebe en otra religión"
+request_help_nexo_underattack: "&aUn nexo de su religion esta siendo atacado &6(Click para defenderlo)"
+hover_request_help_nexo_underattack: "&aClick para ser teletransportado"
+player_lost_points_for_death: "&cHas perdido %religions_poins_killed% puntos de honor"
+player_win_points_for_murder: "&cHas ganado %religions_poins_killed% puntos de honor"
+player_lost_points_destroyed_nexo: "&cUno de tus nexos ha sido destruido, has perdido %religions_lost_points_nexo& puntos de honor"
+minutes: "minutos"
+hours: "horas"
+days: "dias"
+next_reward_info: "&aProximas recompensas en: "
+not_level: "&cNo tiene el nivel suficiente para entrar a una religión"
+nexo_menu:
+  name: "&8Menu del nexo"
+  filler:
+    name: "&a-"
+    lore: []
+main_menu:
+  name: "&8Ingresó a la religión"
+  accept:
+    name: "&aAceptar entrar a la religión"
+    lore: []
+  deny:
+    name: "&cNo quiero pertenecer a esta religión"
+    lore: []
+  filler:
+    name: "&a-"
+    lore: []
+  info:
+    name: "&aInformacion"
+    lore:
+      - "&7Al pertencer a una religión"
+      - "&7estaras en la obligación de cumplir sus doctrinas,"
+      - "&7defender territorios y combatir por tu ideologia"
+      - "&7en cruzadas campales"
+      - ""
+      - "&6Obtendras beneficios por pertenecer a una religión"

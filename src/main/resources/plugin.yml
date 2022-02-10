@@ -1,0 +1,13 @@
+name: Religions
+version: '${project.version}'
+main: com.celcius.religions.Religions
+load: POSTWORLD
+softdepend:
+  - Multiverse-Core
+api-version: 1.17
+commands:
+  religion:
+    description: default command for users
+  religionadmin:
+    description: Command admin to manage the religions
+    #permission: personalbank.admin

@@ -1,0 +1,50 @@
+database: SQLITE
+points_when_nexo_is_destroyed: 10
+points_when_player_is_killed: 2
+rewards_time: 1000
+update_nexos_time: 100
+seconds_to_delay_help_messages: 100
+seconds_delay_teleport: 500
+nexo_items_heal:
+  1:
+    id: "OBSIDIAN"
+    heal: 10
+    mode: vanilla
+  2:
+    id: "BEDROCK"
+    heal: 100
+    mode: vanilla
+  3:
+    id: "RAGNARITA"
+    type: "INGREDIENTES"
+    mode: mmoitem
+    heal: 200
+rewards_by_time_commands:
+  - "xp give %player% 10l;0.5"
+  - "eco give %player% 10000;0.5"
+  - "mmocore admin exp give %player% main 40;0.7"
+#nexo_life: "(%religion_points% * 10) + 1000"
+#balance_players_between_religions: true
+mysql_credentials:
+  host: localhost
+  database: minecraft
+  user: root
+  pass: lovereligions
+mmocore_dependecy:
+  enabled: true
+  level_to_access_mmocore: 10
+main_menu:
+  accept:
+    item: GREEN_WOOL
+    slot: 20
+  deny:
+    item: RED_WOOL
+    slot: 24
+  religion:
+    slot: 4
+  info:
+    item: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDAxYWZlOTczYzU0ODJmZGM3MWU2YWExMDY5ODgzM2M3OWM0MzdmMjEzMDhlYTlhMWEwOTU3NDZlYzI3NGEwZiJ9fX0
+    slot: 31
+
+
+

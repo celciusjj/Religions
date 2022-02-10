@@ -1,0 +1,38 @@
+religions:
+  kanaidad:
+    name: "&bKanaidad"
+    placeholder: "&#33F7FFKanaidad"
+    leader: "kana"
+    lore:
+    - "&7Esta ideologia cree en la pureza"
+    - "&7para alcanzar la divinidad siguiendo"
+    - "&7las doctrinas de &BKana &7su Diosa, y castigando"
+    - "&7fuertemente a las ideologias rebeldes"
+    - "&7buscando su purificación"
+    max_players: 5
+    permission: "religion.kanaidad"
+    commands_enter_to_religion:
+      - "lp user %player% permission set religion.kanaidad"
+      - "lp user %player% permission set faction.kanaidad"
+    commands_exit_to_religion:
+      - "lp user %player% permission unset religion.kanaidad"
+      - "lp user %player% permission unset faction.kanaidad"
+    icon: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTU2OThmMWY3NjEwMWU4MTExNDdmOTY5NWQwNmJlNjBjNzI4NjRiNTBlMTM5ZjY1ZWY5YzFmNmNiYjBmOTRlYSJ9fX0="
+  pansecta:
+    name: "&cPansecta"
+    placeholder: "&#FF0000Pansecta"
+    leader: "tocineta"
+    lore:
+    - "&7Esta ideologia cree que la entropia"
+    - "&7y los pecados rigen la estabilidad del universo"
+    - "&7siguiendo las doctronicas de &cPanceta"
+    - "&7su Dios para crear caos a donde vayan"
+    max_players: 5
+    permission: "religion.panseceta"
+    commands_enter_to_religion:
+      - "lp user %player% permission set religion.pansecta"
+      - "lp user %player% permission set faction.pansecta"
+    commands_exit_to_religion:
+      - "lp user %player% permission unset religion.pansecta"
+      - "lp user %player% permission unset faction.pansecta"
+    icon: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTg4ODExM2E5ZWE2OGM4ZDg4N2U3ZDNlZTU0YmFjM2VhNDIxMGJmYmFiNzIwZDhlODRiZTU3MDVjZmFkYzViIn19fQ=="
