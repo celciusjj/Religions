@@ -14,6 +14,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -23,11 +24,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class EntityEvent implements Listener {
     private final Religions plugin = Religions.getPlugin(Religions.class);
@@ -38,8 +42,6 @@ public class EntityEvent implements Listener {
         Entity entity = event.getEntity();
         Entity dañador = event.getDamager();
         if(entity.getType().equals(EntityType.ENDER_CRYSTAL)){
-            //PersistentDataContainer data = entity.getPersistentDataContainer();
-            //if(data.has(new NamespacedKey(plugin, entity.getUniqueId())))
             if(plugin.getNexos().containsKey(entity.getUniqueId())){
                 event.setCancelled(true);
                 if(dañador instanceof Player) {
@@ -108,6 +110,19 @@ public class EntityEvent implements Listener {
         }
     }
 
+    /*
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        List<Nexo> nexos = plugin.getNexos().values().stream().collect(Collectors.toList());
+        boolean exists = nexos.stream().anyMatch(x -> x.getEntity().getLocation().distance(event.getTo()));
+        if(exists) {
+            Bukkit.getConsoleSender().sendMessage("entra");
+            event.getPlayer().setVelocity(event.getTo().toVector().subtract(event.getFrom().toVector()).multiply(-1));
+        }
+    }
+    
+     */
+
     void sendMessageHelpReligion(Entity entity, Religion religion){
         if(plugin.getCooldownsHelp().containsKey(entity.getUniqueId())){
             Long timeAgo = plugin.getCooldownsHelp().get(entity.getUniqueId());
@@ -127,11 +142,17 @@ public class EntityEvent implements Listener {
     void sendMessageToUsers(Religion religion){
         List<UUID> players = plugin.getDatabase().getPlayersFromReligion(religion.getId());
         for(UUID player: players){
-            Player realPlayer = Bukkit.getPlayer(player);
-            TextComponent message = new TextComponent(chat.replace(realPlayer, plugin.getLang().getString("request_help_nexo_underattack"), true, true));
-            message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(chat.replace(realPlayer,plugin.getLang().getString("hover_request_help_nexo_underattack"), true, false)).create()));
-            message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/religion nexo help" ) );
-            realPlayer.spigot().sendMessage( message );
+            OfflinePlayer realPlayer = Bukkit.getOfflinePlayer(player);
+            if(realPlayer != null){
+                if(realPlayer.isOnline()) {
+                    Player playerOnline = (Player) realPlayer;
+                    TextComponent message = new TextComponent(chat.replace(realPlayer, plugin.getLang().getString("request_help_nexo_underattack"), true, true));
+                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(chat.replace(realPlayer,plugin.getLang().getString("hover_request_help_nexo_underattack"), true, false)).create()));
+                    message.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/religion nexo help" ) );
+                    playerOnline.spigot().sendMessage( message );
+                }
+            }
+
         }
     }
 }

@@ -120,6 +120,23 @@ public abstract class DatabaseManager {
         }
     }
 
+    public int getNumberPlayersOfReligion(String religionId){
+        int total = 0;
+        try {
+            PreparedStatement statement = conn.prepareStatement("SELECT count(*) as total FROM player_data WHERE religion = ?");
+            statement.setString(1, religionId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                total = resultSet.getInt("total");
+            }
+            return total;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return total;
+        }
+    }
+
     public boolean givePointsToPlayers(UUID uuid, int points){
         try {
             PreparedStatement statement = conn.prepareStatement("UPDATE `player_data` SET `points`= `points` + ? WHERE `uuid` = ? AND points >= 0");
@@ -138,6 +155,18 @@ public abstract class DatabaseManager {
             PreparedStatement statement = conn.prepareStatement("UPDATE `player_data` SET `points`= `points` - ? WHERE `religion` = ? AND points >= 0");
             statement.setInt(1, points);
             statement.setString(2, String.valueOf(religionId));
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean resetPointsReligion(String religionId){
+        try {
+            PreparedStatement statement = conn.prepareStatement("UPDATE `player_data` SET `points`= 0 WHERE `religion` = ?");
+            statement.setString(1, String.valueOf(religionId));
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {

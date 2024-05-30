@@ -4,8 +4,6 @@ import com.celcius.religions.object.Religion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -13,9 +11,11 @@ public class RewardsHandler {
     private final Religions plugin = Religions.getPlugin(Religions.class);
     List<String> rewards = plugin.getConfig().getStringList("rewards_by_time_commands");
     List<UUID> players;
+    Religion religion;
 
-    public RewardsHandler(List<UUID> players){
+    public RewardsHandler(List<UUID> players, Religion religion){
         this.players = players;
+        this.religion = religion;
     }
 
     public void generateRewards(){
@@ -29,12 +29,15 @@ public class RewardsHandler {
             double theChance = Double.parseDouble(data[1]);
             if (generateRandomNumber() < theChance) {
                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                for(UUID player: players){
-                    Player realPlayer = Bukkit.getPlayer(player);
-                    if(realPlayer.isOnline()){
-                        String newCommand = theCommand.replace("%player%", realPlayer.getName());
-                        Bukkit.dispatchCommand(console, newCommand);
-                        Bukkit.getConsoleSender().sendMessage("se envio el mensaje");
+                if(players.size() > 0){
+                    for(UUID player: players){
+                        OfflinePlayer realPlayer = Bukkit.getOfflinePlayer(player);
+                        if(realPlayer != null){
+                            if(realPlayer.isOnline()){
+                                String newCommand = theCommand.replace("%player%", realPlayer.getName());
+                                Bukkit.dispatchCommand(console, newCommand);
+                            }
+                        }
                     }
                 }
             }

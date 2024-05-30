@@ -57,7 +57,7 @@ public class CommandUser implements CommandExecutor {
                                     teleport.teleportPlayer();
                                     plugin.getCooldownsTeleportPlayers().replace(player.getUniqueId(), System.currentTimeMillis());
                                 }else{
-                                    player.sendMessage("Tu teleport esta en cooldown, debes esperar x minutos");
+                                    player.sendMessage(chat.replace(player, plugin.getLang().getString("cooldown_teleport_nexo"), true, true));
                                 }
                             }else{
                                 TeleportHandler teleport = new TeleportHandler(player);
@@ -67,7 +67,7 @@ public class CommandUser implements CommandExecutor {
                     }
                 }
             }else{
-                player.sendMessage(plugin.getLang().getString("noPermission"));
+                player.sendMessage(chat.replace(player,plugin.getLang().getString("noPermission"), true, true));
             }
         } catch (Exception ex) {
 

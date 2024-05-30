@@ -7,15 +7,10 @@ import com.celcius.religions.object.Religion;
 import com.celcius.religions.utils.GFG;
 import com.celcius.religions.utils.SetCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.command.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +36,17 @@ public class CommandAdmin implements CommandExecutor, TabCompleter {
                             Date currentDate = new Date(currentTime);
                             Date nextDate = new Date(plugin.getNextTime());
                             GFG dateDiff = new GFG();
-                            player.sendMessage(plugin.getChat().replace(player, plugin.getLang().getString("next_reward_info") +""+ dateDiff.findDifference(currentDate, nextDate), true, true));
+                            String difference = dateDiff.findDifference(currentDate, nextDate);
+                            player.sendMessage(plugin.getChat().replace(player, difference, true, true));
+                        }
+                    }
+                    if(args[0].equals("count")){
+                        if(!args[1].isEmpty()){
+                            if(plugin.getReligionsList().containsKey(args[1])){
+                                Religion religion = plugin.getReligionsList().get(args[1]);
+                                int total = plugin.getDatabase().getNumberPlayersOfReligion(religion.getId());
+                                player.sendMessage("el numero de jugadores en "+ religion.getName() + " es "+total);
+                            }
                         }
                     }
                     if(args[0].equals("save")){
@@ -70,8 +75,6 @@ public class CommandAdmin implements CommandExecutor, TabCompleter {
                                     Entity entity = player.getWorld().spawnEntity(player.getLocation(), EntityType.ENDER_CRYSTAL);
                                     Nexo nexo = new Nexo(entity, religion);
                                     plugin.getNexos().put(entity.getUniqueId(), nexo);
-                                    PersistentDataContainer data = entity.getPersistentDataContainer();
-                                    data.set(new NamespacedKey(plugin, String.valueOf(entity.getUniqueId())), PersistentDataType.STRING, String.valueOf(entity.getUniqueId()));
                                     nexo.saveNexoInYAML();
                                 }
                             }
@@ -85,6 +88,15 @@ public class CommandAdmin implements CommandExecutor, TabCompleter {
                                 SetCommand command = new SetCommand();
                                 command.launchCommand(plugin.getReligions().getStringList("religions."+playerReligion.getReligionID()+".commands_exit_to_religion"), player);
                                 player.sendMessage("jugador eliminado de la religión");
+                            }
+                        }
+                        if(args[1].equals("points")){
+                            if(!args[2].isEmpty()){
+                                if(plugin.getReligionsList().containsKey(args[2])){
+                                    Religion religion = plugin.getReligionsList().get(args[2]);
+                                    plugin.getDatabase().resetPointsReligion(religion.getId());
+                                    player.sendMessage("Puntos removidos para" + religion.getId());
+                                }
                             }
                         }
                         if(args[1].equals("nexo")){

@@ -2,9 +2,7 @@ package com.celcius.religions.api;
 
 import com.celcius.religions.Religions;
 import com.celcius.religions.object.PlayerAndReligion;
-import com.celcius.religions.object.Religion;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 public class ReligionAPI {
     private final Religions plugin = Religions.getPlugin(Religions.class);
@@ -18,6 +16,10 @@ public class ReligionAPI {
             String placeholder = plugin.getLang().getString("not_religion");
             return placeholder;
         }
+    }
+
+    public String getLevelToEnterReligionMMOCORE(){
+        return String.valueOf(plugin.getConfig().getInt("mmocore_dependecy.level_to_access_mmocore"));
     }
 
     public String getReligionIdFromPlayer(OfflinePlayer p){

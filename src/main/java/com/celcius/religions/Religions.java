@@ -5,7 +5,6 @@ import com.celcius.religions.command.CommandUser;
 import com.celcius.religions.events.ChunkEvent;
 import com.celcius.religions.events.EntityEvent;
 import com.celcius.religions.events.GuiEvent;
-import com.celcius.religions.handlers.NexoHandler;
 import com.celcius.religions.handlers.RewardsHandler;
 import com.celcius.religions.object.Nexo;
 import com.celcius.religions.object.Religion;
@@ -17,21 +16,16 @@ import com.celcius.religions.utils.Chat;
 import com.celcius.religions.utils.Menu;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,6 +104,13 @@ public class Religions extends JavaPlugin {
         return cooldownsTeleportPlayers;
     }
 
+    /*
+    public HashMap<UUID, Chunk> getChunkNexos() {
+        return chunkNexos;
+    }
+
+     */
+
     public enum DatabaseType { MYSQL, SQLITE }
 
 
@@ -129,7 +130,7 @@ public class Religions extends JavaPlugin {
         generateReligions();
         sendRewards();
         updateNexos();
-        //generateSavedNexos();
+        generateSavedNexosChunks();
     }
 
     private void generateReligions(){
@@ -149,18 +150,39 @@ public class Religions extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("§5The religions has been initialized");
     }
 
-    void generateSavedNexos(){
+    void generateSavedNexosChunks(){
         if (this.getNexosConfiguration().getKeys(true).size() != 0 ){
             for (Object nexusYML : this.getNexosConfiguration().getConfigurationSection("nexos").getKeys(false)) {
                 ConfigurationSection entityId = this.getNexosConfiguration().getConfigurationSection("nexos." + nexusYML);
                 Location l = entityId.getLocation("entity.location");
-                l.getWorld().loadChunk(l.getBlock().getChunk());
-                Entity entity = l.getWorld().spawnEntity(l, EntityType.ENDER_CRYSTAL);
+                Boolean isLoad = l.getWorld().getChunkAt(l).load();
+                if(isLoad){
+                    Bukkit.getConsoleSender().sendMessage("nexos cargados");
+                }
+
+
+
+                /*
+                //
+                //
+
+                List<Entity> entities = Arrays.asList(l.getBlock().getChunk().getEntities());
+                Entity findedEntity = Bukkit.getEntity(UUID.fromString(entityId.getString("entity.uuid")));
+                Bukkit.getConsoleSender().sendMessage(findedEntity.getUniqueId()+"lo encuentra");
+                Bukkit.getConsoleSender().sendMessage(entities.size()+"tamaño");
+                Bukkit.getConsoleSender().sendMessage(entities.get(0).getType()+""+entities.get(0).getUniqueId());
+                Bukkit.getConsoleSender().sendMessage(entities.get(1).getType()+""+entities.get(1).getUniqueId());
+                List<Entity> filterNexos = entities.stream().filter(item -> item.getUniqueId().toString().equals(entityId.getString("entity.uuid")) && item.getType() == EntityType.ENDER_CRYSTAL).toList();
+                List<Entity> filterHolograms = entities.stream().filter(item -> item.getUniqueId().toString().equals(entityId.getString("hologram.uuid")) && item.getType() == EntityType.ARMOR_STAND).toList();
+
+                Bukkit.getConsoleSender().sendMessage(filterHolograms.size()+""+filterNexos.size());
+
                 Religion religion = religionsList.get(entityId.getString("religionId"));
-                Nexo nexo = new Nexo(entity, religion, Double.valueOf(entityId.getString("life")));
-                this.getNexos().put(entity.getUniqueId(), nexo);
-                this.getNexosConfiguration().set("nexos."+entityId, null);
-                nexo.saveNexoInYAML();
+                Nexo nexo = new Nexo(filterNexos.get(0), (ArmorStand) filterHolograms.get(0), religion, Double.valueOf(entityId.getString("life")));
+                this.getNexos().put(filterNexos.get(0).getUniqueId(), nexo);
+                //l.getChunk().setForceLoaded(false);
+
+                 */
             }
         }
     }
@@ -195,19 +217,10 @@ public class Religions extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        /*
-        for(Nexo nexo: nexos.values()){
-            Bukkit.getConsoleSender().sendMessage(nexo.getEntity().getUniqueId()+"");
-            Location l = this.getNexosConfiguration().getLocation("nexos."+nexo.getEntity().getUniqueId()+".entity.location");
-            l.getChunk().setForceLoaded(true);
-            //l.getWorld().loadChunk(l.getBlock().getChunk());
-            Entity newEntity = Bukkit.getEntity(nexo.getEntity().getUniqueId());
-            NexoHandler handler = new NexoHandler(nexo, newEntity);
-            handler.removeNexo();
-
-            nexo.saveNexoWithoutLocation();
+        for (Map.Entry<UUID, Nexo> value: nexos.entrySet()) {
+            this.getNexosConfiguration().set("nexos."+value.getKey()+".life", value.getValue().getLife());
         }
-         */
+        this.saveConfig();
         Bukkit.getConsoleSender()
                 .sendMessage("§5 The plugin has been disabled");
     }
@@ -228,7 +241,7 @@ public class Religions extends JavaPlugin {
         PluginManager mg = getServer().getPluginManager();
         mg.registerEvents(new GuiEvent(), this);
         mg.registerEvents(new EntityEvent(), this);
-        //mg.registerEvents(new ChunkEvent(), this);
+        mg.registerEvents(new ChunkEvent(), this);
 
     }
 
@@ -355,6 +368,13 @@ public class Religions extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+        if (this.religionsConfiguration != null) {
+            try {
+                this.religionsConfiguration.save(this.religionsFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         if (this.nexosConfiguration != null) {
             try {
                 this.nexosConfiguration.save(this.nexosFile);
@@ -449,8 +469,6 @@ public class Religions extends JavaPlugin {
         }).runTaskTimer(this,0, 20 * this.getConfig().getInt("update_nexos_time"));
     }
 
-
-
     public void sendRewards() {
         BukkitTask task = (new BukkitRunnable() {
             @Override
@@ -463,7 +481,7 @@ public class Religions extends JavaPlugin {
                     }
                     Religion winner = religionsList.values().stream().max(Comparator.comparing(v -> v.getPoints())).get();
 
-                    RewardsHandler rewardsHandler = new RewardsHandler(getDatabase().getPlayersFromReligion(winner.getId()));
+                    RewardsHandler rewardsHandler = new RewardsHandler(getDatabase().getPlayersFromReligion(winner.getId()), winner);
                     rewardsHandler.generateRewards();
 
                     String message = getLang().getString("broadcast_message_rewards_by_time");

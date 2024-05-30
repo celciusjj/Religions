@@ -94,7 +94,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -131,6 +131,14 @@
             <version>1.8.3</version>
             <scope>system</scope>
             <systemPath>${basedir}\src\lib\MMOCORE-1.8.3.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>celcius</groupId>
+            <artifactId>AdvancedEnchantments</artifactId>
+            <scope>system</scope>
+            <version>9.0.0b31</version>
+            <systemPath>${basedir}\src\lib\AdvancedEnchantments-9.0.0b31</systemPath>
         </dependency>
     </dependencies>
 

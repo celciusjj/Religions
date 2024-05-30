@@ -19,6 +19,9 @@ public class ReplacementHook implements IReplacementHook {
         if(var.equals("player_religion")){
             return plugin.getReligionAPI().getReligionIdFromPlayer(player);
         }
+        if(var.equals("level_enter")){
+            return plugin.getReligionAPI().getLevelToEnterReligionMMOCORE();
+        }
         return null;
     }
 

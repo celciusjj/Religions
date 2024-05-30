@@ -3,9 +3,12 @@ package com.celcius.religions.object;
 import com.celcius.religions.Religions;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
@@ -19,7 +22,7 @@ public class Nexo {
     private boolean needHelp = false;
 
 
-    public Nexo(Entity entity, Religion religion){
+    public Nexo(Entity entity, Religion religion) {
         entity.setPersistent(true);
         this.religion = religion;
         this.entity = entity;
@@ -27,19 +30,26 @@ public class Nexo {
         this.life = maxLife;
         ArmorStand hologram = buildHologram();
         this.religionHologram = hologram;
+
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        data.set(new NamespacedKey(plugin, "nexo"), PersistentDataType.STRING, String.valueOf(entity.getUniqueId()));
     }
 
-    public Nexo(Entity entity, Religion religion, double life){
+    public Nexo(Entity entity, ArmorStand hologram, Religion religion, double life){
         this.religion = religion;
         this.entity = entity;
         this.maxLife = buildLife();
         this.life = life;
-        ArmorStand hologram = buildHologram();
         this.religionHologram = hologram;
+        updateNexo();
     }
 
     public void updateNexo(){
+        if(plugin.getDatabase().givePointsToAllPlayersByReligion(this.religion.getId(), plugin.getConfig().getInt("points_for_maintain_nexo"))){
+            Bukkit.getConsoleSender().sendMessage("Se agregaron los puntos a los jugadores de " + this.religion.getId());
+        }
         this.needHelp = false;
+        this.religionHologram.setCustomName(ChatColor.translateAlternateColorCodes('&', religion.getName()) + " §c❤ " + plugin.getDf().format(life) + "/" + plugin.getDf().format(maxLife));
     }
 
     public ArmorStand buildHologram(){
@@ -65,7 +75,6 @@ public class Nexo {
         this.entity = entity;
         List<Entity> near =  this.entity.getNearbyEntities(0, 2, 0);
         List<Entity> nearHologram = near.stream().filter(item -> item.getUniqueId().equals(religionHologram.getUniqueId())).toList();
-        Bukkit.getConsoleSender().sendMessage(nearHologram.size()+"");
         this.religionHologram = (ArmorStand) nearHologram.get(0);
     }
 
@@ -95,17 +104,11 @@ public class Nexo {
 
     public void saveNexoInYAML(){
         plugin.getNexosConfiguration().createSection("nexos."+this.getEntity().getUniqueId());
-        //plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".uuid", this.getEntity().getUniqueId());
+        plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".entity.uuid",""+this.getEntity().getUniqueId());
         plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".entity.location", getEntity().getLocation());
         plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".life", getLife());
-        plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".hologram", getReligionHologram().getLocation());
-        plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".religionId", getReligion().getId());
-        plugin.saveConfig();
-    }
-
-    public void saveNexoWithoutLocation(){
-        plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".life", getLife());
-        plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".hologram", getReligionHologram().getLocation());
+        plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".hologram.uuid",""+this.getReligionHologram().getUniqueId());
+        plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".hologram.location", getReligionHologram().getLocation());
         plugin.getNexosConfiguration().set("nexos."+this.getEntity().getUniqueId()+".religionId", getReligion().getId());
         plugin.saveConfig();
     }

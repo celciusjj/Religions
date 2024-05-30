@@ -1,5 +1,6 @@
 database: SQLITE
 points_when_nexo_is_destroyed: 10
+points_for_maintain_nexo: 3
 points_when_player_is_killed: 2
 rewards_time: 1000
 update_nexos_time: 100
@@ -7,18 +8,29 @@ seconds_to_delay_help_messages: 100
 seconds_delay_teleport: 500
 nexo_items_heal:
   1:
+    effect: heal
     id: "OBSIDIAN"
     heal: 10
     mode: vanilla
   2:
+    effect: heal
     id: "BEDROCK"
     heal: 100
     mode: vanilla
   3:
+    effect: heal
     id: "RAGNARITA"
     type: "INGREDIENTES"
     mode: mmoitem
     heal: 200
+  4:
+    effect: potion
+    id: "SAND"
+    mode: vanilla
+    potions:
+      - INVISIBILITY,1,30,30
+      - JUMP,1,30,30
+
 rewards_by_time_commands:
   - "xp give %player% 10l;0.5"
   - "eco give %player% 10000;0.5"

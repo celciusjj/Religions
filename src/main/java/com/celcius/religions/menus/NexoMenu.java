@@ -72,10 +72,19 @@ public class NexoMenu implements Menu {
 
                 if(info.getString("mode").equals("vanilla")){
                     if(Material.valueOf(info.getString("id")).equals(item.getType())){
-                        double heal = info.getDouble("heal");
-                        double realHeal = item.getAmount() * heal;
-                        NexoHandler nexoHandler = new NexoHandler(nexo, entity);
-                        nexoHandler.healNexo(realHeal);
+                        if(info.getString("effect").equals("heal")){
+                            double heal = info.getDouble("heal");
+                            double realHeal = item.getAmount() * heal;
+                            NexoHandler nexoHandler = new NexoHandler(nexo, entity);
+                            nexoHandler.healNexo(realHeal);
+                        }
+                        /*
+                        if (info.getString("effect").equals("potion")) {
+                            NexoHandler nexoHandler = new NexoHandler(nexo, entity);
+                            nexoHandler.healNexo(realHeal);
+                        }
+
+                         */
                     }
                 }else if(info.getString("mode").equals("mmoitem")){
                     String type = info.getString("type");
@@ -84,11 +93,20 @@ public class NexoMenu implements Menu {
                     Bukkit.getConsoleSender().sendMessage(currentItemMeta.getDisplayName());
                     Bukkit.getConsoleSender().sendMessage(item.getItemMeta().getDisplayName());
                     if(currentItemMeta.getDisplayName().equals(item.getItemMeta().getDisplayName())){
-                        if(currentItemMeta.getLore().equals(item.getItemMeta().getLore())){
-                            double heal = info.getDouble("heal");
-                            double realHeal = item.getAmount() * heal;
-                            NexoHandler nexoHandler = new NexoHandler(nexo, entity);
-                            nexoHandler.healNexo(realHeal);
+                        if(currentItemMeta.getLore().equals(item.getItemMeta().getLore())) {
+                            if (info.getString("effect").equals("heal")) {
+                                double heal = info.getDouble("heal");
+                                double realHeal = item.getAmount() * heal;
+                                NexoHandler nexoHandler = new NexoHandler(nexo, entity);
+                                nexoHandler.healNexo(realHeal);
+                            }
+                            /*
+                            if (info.getString("effect").equals("potion")) {
+                                NexoHandler nexoHandler = new NexoHandler(nexo, entity);
+                                nexoHandler.healNexo(realHeal);
+                            }
+
+                             */
                         }
                     }
                 }

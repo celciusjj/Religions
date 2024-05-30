@@ -3,6 +3,7 @@ package com.celcius.religions.handlers;
 import com.celcius.religions.Religions;
 import com.celcius.religions.object.Nexo;
 import com.celcius.religions.object.PlayerAndReligion;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -23,7 +24,11 @@ public class TeleportHandler {
         if(nexo.size() > 0){
             Random randomGenerator = new Random();
             int index = randomGenerator.nextInt(nexo.size());
-            player.teleport(nexo.get(index).getEntity().getLocation());
+            int coords = randomGenerator.nextInt(3);
+            Location l = nexo.get(index).getEntity().getLocation();
+            l.add(coords, 3, coords);
+            player.teleport(l);
+            //player.teleport(nexo.get(index).getEntity().getLocation());
             plugin.getCooldownsTeleportPlayers().put(player.getUniqueId(), System.currentTimeMillis());
         }else{
             player.sendMessage("Ningun nexo requiere su ayuda");

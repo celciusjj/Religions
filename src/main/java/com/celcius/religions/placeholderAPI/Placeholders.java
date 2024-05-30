@@ -44,6 +44,12 @@ public class Placeholders extends PlaceholderExpansion {
         if(params.equalsIgnoreCase("points")){
             return plugin.getReligionAPI().getPointsOfPlayer(player);
         }
+        if(params.equalsIgnoreCase("kanaidad")){
+            return String.valueOf(plugin.getReligionAPI().getPointsOfReligion("kanaidad"));
+        }
+        if(params.equalsIgnoreCase("pansecta")){
+            return String.valueOf(plugin.getReligionAPI().getPointsOfReligion("pansecta"));
+        }
         return null;
     }
 }

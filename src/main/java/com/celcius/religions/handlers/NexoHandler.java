@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,14 +31,37 @@ public class NexoHandler {
         plugin.getNexos().remove(nexo.getEntity().getUniqueId());
     }
 
+    /*
+    public void effectPotions(){
+//make sure there are no whitespaces in the "effectString"
+        String[] values = effectString.replaceAll(" ").split(",");
+        PotionEffectType type;
+        int duration = 30;
+        int strength = 1;
+        int radius = 10;
+        type = PotionEffectType.getByName(values[0].toUpperCase());
+        if(values.length > 1)
+            duration = Integer.parseInt(values[1]);
+        if(values.length > 2)
+            strength = Integer.parseInt(values[2]);
+        if(values.length > 3)
+            strength = Integer.parseInt(values[2]);
+
+
+        PotionEffect effect = type.createEffect(duration * 20, strength);
+        player.addPotionEffect(effect);
+    }
+
+     */
+
     public void subtractLife(double damage){
             if(nexo.getLife()-damage < 0){
                 nexo.setLife(0);
-                nexo.getReligionHologram().setCustomName(ChatColor.translateAlternateColorCodes('&', nexo.getReligion().getName()) + " §c❤ " + plugin.getDf().format(nexo.getLife()) + "/" + 1000);
+                nexo.getReligionHologram().setCustomName(ChatColor.translateAlternateColorCodes('&', nexo.getReligion().getName()) + " §c❤ " + plugin.getDf().format(nexo.getLife()) + "/" + plugin.getDf().format(nexo.getMaxLife()));
                 deathNexo();
             }else{
                 nexo.setLife(nexo.getLife()-damage);
-                nexo.getReligionHologram().setCustomName(ChatColor.translateAlternateColorCodes('&', nexo.getReligion().getName()) + " §c❤ " + plugin.getDf().format(nexo.getLife()) + "/" + 1000);
+                nexo.getReligionHologram().setCustomName(ChatColor.translateAlternateColorCodes('&', nexo.getReligion().getName()) + " §c❤ " + plugin.getDf().format(nexo.getLife()) + "/" + plugin.getDf().format(nexo.getMaxLife()));
             }
     }
 
@@ -94,16 +119,15 @@ public class NexoHandler {
         penancesForDestroyingNexus();
         List<Religion> religions = plugin.getReligionsList().values().stream().collect(Collectors.toList());
         List<Religion> newReligion = religions.stream().filter(item -> item.getId() != nexo.getReligion().getId()).toList();
-        rewardsForDestroyNexo(newReligion.get(0));
+        //rewardsForDestroyNexo(newReligion.get(0));
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',"&5El nexo de "+nexo.getReligion().getName()+ " &5ha sido capturado por "+newReligion.get(0).getName()));
         nexo.setReligion(newReligion.get(0));
-        nexo.getReligionHologram().remove();
         int particlesId= startParticles(nexo.getEntity().getLocation());
         stopParticles(particlesId);
         Double maxLife = nexo.buildLife();
         nexo.setMaxLife(maxLife);
         nexo.setLife(maxLife);
-        nexo.setReligionHologram(nexo.buildHologram());
+        nexo.updateNexo();
         nexo.saveNexoInYAML();
     }
 }
